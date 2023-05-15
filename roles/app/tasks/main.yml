@@ -1,0 +1,59 @@
+---
+# tasks file for app
+- block:
+
+  - name: install tools
+    apt:
+      update_cache: yes
+      pkg:
+      - ca-certificates
+      - curl
+      - gnupg
+      state: latest
+
+  - name: Add Docker’s official GPG key step1
+    shell: install -m 0755 -d /etc/apt/keyrings
+
+  - name: Add Docker’s official GPG key step2
+    shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg"
+
+  - name: Add Docker’s official GPG key step3
+    file:
+      path: /etc/apt/keyrings/docker.gpg
+      mode: '0444'
+
+  - name: set up the repository
+    shell: echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  - name: install docker utils
+    apt:
+      update_cache: yes
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      state: latest
+  when: ansible_os_family == "Debian"
+
+- block:
+    
+  - name: install tools
+    yum:
+      name: yum-utils
+      state: latest
+
+  - name: setup repository
+    shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+  - name: inastall Docker
+    yum:
+      name:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io 
+        - docker-buildx-plugin 
+        - docker-compose-plugin
+      state: latest
+  when: ansible_os_family == "RedHat"

@@ -1,0 +1,15 @@
+---
+
+- name: apply db role
+  hosts: database
+  become: yes
+
+  roles:
+  - database
+
+- name: apply app role
+  hosts: app
+  become: yes
+
+  roles:
+  - app

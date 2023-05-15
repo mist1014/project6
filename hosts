@@ -1,0 +1,20 @@
+[app]
+
+vm2 ansible_host=10.128.0.30
+vm3 ansible_host=10.128.0.19
+
+[database]
+
+vm1 ansible_host=10.128.0.7
+
+[web]
+
+vm1 ansible_host=10.128.0.7
+
+[all:vars]
+ansible_user=ansible 
+ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa
+
+[database:vars]
+postgresql_version=15
+data_directory=/var/new_postgresql_direcrory

@@ -1,0 +1,31 @@
+---
+# tasks file for database
+
+- name: install PostgreSQL server
+  apt:
+    name: "postgresql-{{ postgresql_version }}"
+    state: present
+
+- name: make new data dir
+  file:
+    path: "{{ data_directory }}"
+    state: directory
+
+- name: stop postgresql
+  service: 
+    name: postgresql
+    state: stopped
+
+- name: sync directories
+  shell: "rsync -av /var/lib/postgresql {{ data_directory }}"
+
+- name: change config
+  template:
+    src: /home/ansible/project6/roles/database/template/postgresql.conf
+    dest: "/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf"
+
+- name: start postgresql
+  service: 
+    name: postgresql
+    state: started
+
